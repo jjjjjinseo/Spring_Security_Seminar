@@ -25,7 +25,7 @@ public class AuthService {
     }
     public SignInResDto signIn(SignInReqDto dto) {
         User user = userService.read(dto.getUsername());
-        if (user.getPassword().equals(dto.getPassword())) {
+        if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             return new SignInResDto(jwtUtil.generateToken(user.getUsername(), user.getId()));
         } else {
             throw new IllegalArgumentException("Invalid password");
