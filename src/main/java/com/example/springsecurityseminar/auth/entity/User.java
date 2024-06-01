@@ -1,9 +1,10 @@
-package com.example.springsecurityseminar.user.entity;
+package com.example.springsecurityseminar.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @NoArgsConstructor
@@ -31,5 +32,8 @@ public class User {
         this.name = name;
         this.password = password;
         this.phone = phone;
+    }
+    public void passwordEncode(PasswordEncoder passwordEncoder){
+        this.password=passwordEncoder.encode(this.password);
     }
 }

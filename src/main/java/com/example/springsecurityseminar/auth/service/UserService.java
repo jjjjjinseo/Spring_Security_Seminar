@@ -1,7 +1,7 @@
-package com.example.springsecurityseminar.user.service;
+package com.example.springsecurityseminar.auth.service;
 
-import com.example.springsecurityseminar.user.entity.User;
-import com.example.springsecurityseminar.user.repository.UserRepository;
+import com.example.springsecurityseminar.auth.entity.User;
+import com.example.springsecurityseminar.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

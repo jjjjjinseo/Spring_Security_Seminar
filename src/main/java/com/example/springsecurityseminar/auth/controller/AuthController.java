@@ -1,15 +1,18 @@
-package com.example.springsecurityseminar.user.controller;
+package com.example.springsecurityseminar.auth.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.springsecurityseminar.user.dto.SignInReqDto;
-import com.example.springsecurityseminar.user.dto.SignUpReqDto;
-import com.example.springsecurityseminar.user.service.AuthService;
-import com.example.springsecurityseminar.user.service.UserService;
+import com.example.springsecurityseminar.auth.dto.SignInReqDto;
+import com.example.springsecurityseminar.auth.dto.SignUpReqDto;
+import com.example.springsecurityseminar.auth.service.AuthService;
+import com.example.springsecurityseminar.auth.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody SignUpReqDto dto) {
-        userService.create(dto.toEntity());
+        userService.create(authService.signUp(dto));
         return ResponseEntity.created(null).build();
     }
 

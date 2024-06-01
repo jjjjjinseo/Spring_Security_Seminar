@@ -1,6 +1,6 @@
 package com.example.springsecurityseminar.util;
 
-import com.example.springsecurityseminar.user.service.UserService;
+import com.example.springsecurityseminar.auth.service.UserService;
 import com.fasterxml.jackson.core.ErrorReportConfiguration;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

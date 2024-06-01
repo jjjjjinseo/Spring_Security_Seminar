@@ -9,7 +9,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.springsecurityseminar.user.service.UserService;
+import com.example.springsecurityseminar.auth.service.UserService;
 import com.example.springsecurityseminar.util.JwtUtil;
 
 import jakarta.servlet.FilterChain;

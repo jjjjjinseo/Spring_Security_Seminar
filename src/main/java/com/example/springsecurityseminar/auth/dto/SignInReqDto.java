@@ -1,4 +1,4 @@
-package com.example.springsecurityseminar.user.dto;
+package com.example.springsecurityseminar.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

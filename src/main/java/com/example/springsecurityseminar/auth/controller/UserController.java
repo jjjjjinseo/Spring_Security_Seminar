@@ -1,6 +1,6 @@
-package com.example.springsecurityseminar.user.controller;
+package com.example.springsecurityseminar.auth.controller;
 
-import com.example.springsecurityseminar.user.service.UserService;
+import com.example.springsecurityseminar.auth.service.UserService;
 import com.example.springsecurityseminar.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
