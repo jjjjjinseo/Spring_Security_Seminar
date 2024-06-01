@@ -9,6 +9,8 @@ import com.example.springsecurityseminar.auth.dto.SignInResDto;
 import com.example.springsecurityseminar.auth.entity.User;
 import com.example.springsecurityseminar.util.JwtUtil;
 
+import java.util.Optional;
+
 
 @Service
 public class AuthService {
@@ -36,6 +38,10 @@ public class AuthService {
         String password=passwordEncoder.encode(dto.getPassword());
         String phone=dto.getPhone();
 
+        //중복 가입 확인
+        if(userService.checkUsername(username).isPresent()){
+            throw new IllegalArgumentException("이미 등록된 사용자입니다.");
+        }
         User user = User.builder()
                 .username(username)
                 .name(name)
