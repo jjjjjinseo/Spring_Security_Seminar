@@ -20,14 +20,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> read(HttpServletRequest request, @PathVariable Long id) {
-        String token = jwtTokenProvider.resolveToken(request);
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // Remove "Bearer " prefix
-        }
-
-        Long userId = jwtTokenProvider.getUserId(token);
-        if (userId == null || !userId.equals(id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        Long userId = jwtTokenProvider.getUserId(jwtTokenProvider.resolveToken(request).substring(7));
+        if (!userId.equals(id)) {
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(userService.read(id));
     }

@@ -9,13 +9,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.springsecurityseminar.auth.service.UserService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -38,11 +36,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             System.out.println("userId: " + userId);
-            if (jwtTokenProvider.validateToken(jwt)) {
+            if (jwtTokenProvider.validateToken(authorizationHeader)) {  // 전체 authorizationHeader를 전달
+                System.out.println("토큰이 유효합니다.");
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userId, null, new ArrayList<>());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            } else {
+                System.out.println("토큰이 유효하지 않습니다.");
             }
         }
         filterChain.doFilter(request, response);

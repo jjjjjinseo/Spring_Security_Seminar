@@ -2,6 +2,7 @@ package com.example.springsecurityseminar.jwt;
 
 import com.example.springsecurityseminar.auth.service.UserService;
 
+import com.fasterxml.jackson.core.ErrorReportConfiguration;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -30,30 +31,48 @@ public class JwtTokenProvider {
         this.secretKey = secretKey;
         this.expiration = expiration;
         this.issuer = issuer;
+        this.userService=userService;
     }
 
     public String generateToken(String username, Long userId){
         Claims claims = Jwts.claims().setSubject(username);
-        return Jwts.builder()
+        return io.jsonwebtoken.Jwts.builder()
                 .setClaims(claims)
                 .claim("userId", userId)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ expiration))
                 .setIssuer(issuer)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secretKey.getBytes())
                 .compact();
     }
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
-            // 존재하는 회원인지 확인
-            if (userService.read(claims.getBody().get("userId", Long.class)) == null) {
+            // Bearer 검증
+            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
                 return false;
+            } else {
+                token = token.split(" ")[1].trim();
             }
-            // 만료되었을 시 claims 객체가 안 만들어짐, false
-            return !claims.getBody().getExpiration().before(new Date());
+            // 토큰을 파싱하여 claims 객체 생성
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
+
+            // 토큰에서 사용자 ID를 가져와 UserService에서 사용자를 조회
+            Long userId = claims.getBody().get("userId", Long.class);
+            if (userService.read(userId) == null) {
+                System.out.println("유효하지 않은 사용자 ID: " + userId);
+                return false; // 존재하지 않는 사용자 ID
+            }
+
+            // 토큰 만료 여부 확인
+            if (claims.getBody().getExpiration().before(new Date())) {
+                System.out.println("토큰이 만료되었습니다.");
+                return false; // 토큰 만료
+            }
+
+            return true; // 유효한 토큰
         } catch (Exception e) {
-            return false;
+            System.out.println("토큰 유효성 검사 중 예외 발생: " + e.getMessage());
+            return false; // 유효성 검사 실패
         }
     }
 
@@ -62,7 +81,7 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
             return claims.getBody().get("userId", Long.class);
         } catch (Exception e) {
-            return null; // 토큰 파싱 실패 시 null 반환
+            return null;
         }
     }
 
