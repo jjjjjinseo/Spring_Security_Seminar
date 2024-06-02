@@ -1,4 +1,4 @@
-package com.example.springsecurityseminar.filter;
+package com.example.springsecurityseminar.token;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.springsecurityseminar.auth.service.UserService;
-import com.example.springsecurityseminar.util.JwtUtil;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
 
     @Override
@@ -33,12 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            userId = jwtUtil.getUserId(jwt);
+            userId = jwtTokenProvider.getUserId(jwt);
         }
 
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             System.out.println("userId: " + userId);
-            if (jwtUtil.validateToken(jwt)) {
+            if (jwtTokenProvider.validateToken(jwt)) {
                 // Create authentication token without using UserDetails
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userId, null, new ArrayList<>());
