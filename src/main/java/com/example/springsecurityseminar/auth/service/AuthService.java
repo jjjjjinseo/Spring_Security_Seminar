@@ -2,31 +2,28 @@ package com.example.springsecurityseminar.auth.service;
 
 import com.example.springsecurityseminar.auth.dto.SignInReqDto;
 import com.example.springsecurityseminar.auth.dto.SignUpReqDto;
+import com.example.springsecurityseminar.jwt.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.springsecurityseminar.auth.dto.SignInResDto;
 import com.example.springsecurityseminar.auth.entity.User;
-import com.example.springsecurityseminar.util.JwtUtil;
-
-import java.util.Optional;
-
 
 @Service
 public class AuthService {
     private final UserService userService;
-    private final JwtUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder){
+    public AuthService(UserService userService, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder){
         this.userService=userService;
-        this.jwtUtil=jwtUtil;
+        this.jwtTokenProvider=jwtTokenProvider;
         this.passwordEncoder=passwordEncoder;
     }
     public SignInResDto signIn(SignInReqDto dto) {
         User user = userService.read(dto.getUsername());
         if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            return new SignInResDto(jwtUtil.generateToken(user.getUsername(), user.getId()));
+            return new SignInResDto(jwtTokenProvider.generateToken(user.getUsername(), user.getId()));
         } else {
             throw new IllegalArgumentException("Invalid password");
         }
