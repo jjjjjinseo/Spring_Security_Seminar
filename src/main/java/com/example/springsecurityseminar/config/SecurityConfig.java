@@ -1,6 +1,6 @@
 package com.example.springsecurityseminar.config;
 
-import com.example.springsecurityseminar.filter.JwtAuthenticationFilter;
+import com.example.springsecurityseminar.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
