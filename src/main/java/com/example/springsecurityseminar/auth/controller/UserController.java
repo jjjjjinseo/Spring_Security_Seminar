@@ -21,6 +21,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> read(HttpServletRequest request, @PathVariable Long id) {
         Long userId = jwtTokenProvider.getUserId(jwtTokenProvider.resolveToken(request).substring(7));
+
         if (!userId.equals(id)) {
             return ResponseEntity.badRequest().build();
         }
