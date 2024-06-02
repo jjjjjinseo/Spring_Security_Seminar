@@ -19,10 +19,10 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> read(HttpServletRequest request, @PathVariable Long id) {
-//        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-//        if (!userId.equals(id)) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        if (!userId.equals(id)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(userService.read(id));
     }
 }
